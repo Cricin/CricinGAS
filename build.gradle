@@ -1,0 +1,40 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
+    id 'application'
+}
+
+group = 'cn.cricin'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation('com.squareup.okhttp3:okhttp:3.8.0')
+    implementation('com.google.code.gson:gson:2.8.6')
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '1.8'
+}
+
+tasks.findByName("jar").configure {
+    manifest {
+        attributes["Main-Class"] = "miyoushe.sign.Main"
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(configurations.getByName("runtimeClasspath").collect { if (it.isDirectory()) it else zipTree(it) })
+}
+
+application {
+    mainClass = "miyoushe.sign.Main"
+    def env = new ArrayList<String>()
+    if (project.hasProperty("serverChanKey")) {
+        env.add("-DserverChanKey=" + project.property("serverChanKey"))
+    }
+    if(project.hasProperty("debugArgs")) {
+       env.add("-DdebugArgs=true")
+    }
+    applicationDefaultJvmArgs = env
+}
