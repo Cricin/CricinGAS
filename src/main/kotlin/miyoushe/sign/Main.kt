@@ -107,13 +107,7 @@ class Main {
     }
 
     private fun makeDynamicSecrets(): String {
-      val timestamp = if (System.getProperty("githubActions") != null) {
-        // github用的utc时间，比北京时间慢8个小时
-        System.currentTimeMillis() / 1000 + 8 * 60 * 60
-      } else {
-        System.currentTimeMillis() / 1000
-      }
-      Log.println("timestamp=$timestamp")
+      val timestamp = System.currentTimeMillis() / 1000
       val random = CharArray(6) {
         "abcdefghijklmnopqrstuvwxyz0123456789".random()
       }.concatToString()
