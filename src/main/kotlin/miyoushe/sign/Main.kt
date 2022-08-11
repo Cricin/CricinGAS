@@ -37,23 +37,24 @@ class Main {
 
     @JvmStatic
     fun main(args: Array<String>) {
+      if (args.isEmpty()) {
+        println("请输入需要签到的账号cookies.")
+        return
+      }
+      val cookies = args[0].split("|")
       if (System.getProperty("debugArgs") == "true") {
         Log.println("serverChanKey=" + System.getProperty("serverChanKey"))
-        args.forEachIndexed { index, cookie->
+        cookies.forEachIndexed { index, cookie->
           Log.println("账号$index: $cookie")
           Log.println("")
         }
         return
       }
 
-      if (args.isEmpty()) {
-        println("请输入需要签到的账号cookies.")
-        return
-      }
-      Log.println("共${args.size}个账号.")
+      Log.println("共${cookies.size}个账号.")
 
       val pushMessageBuilder = StringBuilder()
-      for ((index, cookie) in args.withIndex()) {
+      for ((index, cookie) in cookies.withIndex()) {
         println("正在签到第${index + 1}个账号.")
         try {
           val uidAndName = requestGameUid(cookie)
@@ -106,7 +107,12 @@ class Main {
     }
 
     private fun makeDynamicSecrets(): String {
-      val timestamp = System.currentTimeMillis() / 1000
+      val timestamp = if (System.getProperty("githubActions") != null) {
+        // github用的utc时间，比北京时间慢8个小时
+        System.currentTimeMillis() / 1000 + 8 * 60 * 60
+      } else {
+        System.currentTimeMillis() / 1000
+      }
       val random = CharArray(6) {
         "abcdefghijklmnopqrstuvwxyz0123456789".random()
       }.concatToString()

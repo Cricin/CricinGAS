@@ -33,8 +33,11 @@ application {
     if (project.hasProperty("serverChanKey")) {
         env.add("-DserverChanKey=" + project.property("serverChanKey"))
     }
-    if(project.hasProperty("debugArgs")) {
-       env.add("-DdebugArgs=true")
+    if (project.hasProperty("githubActions")) {
+        env.add("-DgithubActions=true")
+    }
+    if (project.hasProperty("debugArgs")) {
+        env.add("-DdebugArgs=true")
     }
     applicationDefaultJvmArgs = env
 }
