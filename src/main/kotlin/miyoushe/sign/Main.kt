@@ -113,6 +113,7 @@ class Main {
       } else {
         System.currentTimeMillis() / 1000
       }
+      Log.println("timestamp=$timestamp")
       val random = CharArray(6) {
         "abcdefghijklmnopqrstuvwxyz0123456789".random()
       }.concatToString()
